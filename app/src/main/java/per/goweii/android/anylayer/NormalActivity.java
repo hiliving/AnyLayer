@@ -3,6 +3,7 @@ package per.goweii.android.anylayer;
 import android.animation.Animator;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.FrameLayout;
 import per.goweii.anylayer.Alignment;
 import per.goweii.anylayer.AnimHelper;
 import per.goweii.anylayer.AnyLayer;
+import per.goweii.anylayer.LayerActivity;
 import per.goweii.anylayer.LayerManager;
 
 public class NormalActivity extends AppCompatActivity implements View.OnClickListener {
@@ -24,6 +26,7 @@ public class NormalActivity extends AppCompatActivity implements View.OnClickLis
         initView();
         AnyLayer.with(this)
                 .contentView(R.layout.dialog_test_2)
+                .gravity(Gravity.CENTER)
                 .backgroundColorRes(R.color.dialog_bg)
                 .cancelableOnTouchOutside(true)
                 .cancelableOnClickKeyBack(true)
@@ -34,6 +37,7 @@ public class NormalActivity extends AppCompatActivity implements View.OnClickLis
     private void initView() {
         flContent = findViewById(R.id.fl_content);
         findViewById(R.id.tv_show_full).setOnClickListener(this);
+        findViewById(R.id.tv_show_app_context).setOnClickListener(this);
         findViewById(R.id.tv_show_no_context).setOnClickListener(this);
         findViewById(R.id.tv_show_top).setOnClickListener(this);
         findViewById(R.id.tv_show_top_view_group).setOnClickListener(this);
@@ -75,6 +79,17 @@ public class NormalActivity extends AppCompatActivity implements View.OnClickLis
                         .onClickToDismiss(R.id.iv_1)
                         .show();
                 break;
+            case R.id.tv_show_app_context:
+                AnyLayer.with(this.getApplicationContext(), new LayerActivity.OnLayerCreatedCallback() {
+                    @Override
+                    public void onLayerCreated(@NonNull AnyLayer anyLayer) {
+                        anyLayer.contentView(R.layout.dialog_test_2)
+                                .backgroundColorRes(R.color.dialog_bg)
+                                .onClickToDismiss(R.id.fl_dialog_yes, R.id.fl_dialog_no)
+                                .show();
+                    }
+                });
+                break;
             case R.id.tv_show_no_context:
                 AnyLayer.with()
                         .contentView(R.layout.dialog_test_2)
@@ -99,7 +114,7 @@ public class NormalActivity extends AppCompatActivity implements View.OnClickLis
                                 return AnimHelper.createTopOutAnim(content);
                             }
                         })
-                        .onClickToDismiss(R.id.fl_dialog_yes, R.id.fl_dialog_no)
+                        .onClickToDismiss(R.id.fl_dialog_no)
                         .show();
                 break;
             case R.id.tv_show_top_view_group:
@@ -118,11 +133,12 @@ public class NormalActivity extends AppCompatActivity implements View.OnClickLis
                                 return AnimHelper.createTopOutAnim(content);
                             }
                         })
-                        .onClickToDismiss(R.id.fl_dialog_yes, R.id.fl_dialog_no)
+                        .onClickToDismiss(R.id.fl_dialog_no)
                         .show();
                 break;
             case R.id.tv_show_target_right:
                 AnyLayer.target(findViewById(R.id.tv_show_target_right))
+                        .outsideInterceptTouchEvent(false)
                         .contentView(R.layout.dialog_test_5)
                         .alignment(Alignment.Direction.HORIZONTAL, Alignment.Horizontal.TO_RIGHT, Alignment.Vertical.CENTER, true)
                         .contentAnim(new LayerManager.IAnim() {
@@ -176,6 +192,7 @@ public class NormalActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.tv_show_target_bottom:
                 AnyLayer.target(findViewById(R.id.tv_show_target_bottom))
+                        .outsideInterceptTouchEvent(false)
                         .contentView(R.layout.dialog_test_4)
                         .alignment(Alignment.Direction.VERTICAL, Alignment.Horizontal.CENTER, Alignment.Vertical.BELOW, true)
                         .backgroundColorRes(R.color.dialog_bg)
@@ -209,7 +226,7 @@ public class NormalActivity extends AppCompatActivity implements View.OnClickLis
                                 return AnimHelper.createBottomOutAnim(content);
                             }
                         })
-                        .onClickToDismiss(R.id.fl_dialog_yes, R.id.fl_dialog_no)
+                        .onClickToDismiss(R.id.fl_dialog_no)
                         .show();
                 break;
             case R.id.tv_show_blur_bg:
